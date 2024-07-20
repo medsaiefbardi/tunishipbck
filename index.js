@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: ["http://tunishipfr.onrender.com"],
+  origin: ["http://localhost:3000","https://tunishipfr.onrender.com"],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
