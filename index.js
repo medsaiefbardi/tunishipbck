@@ -32,13 +32,7 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/job-positions', jobPositionRoutes);
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
 
-// The "catchall" handler: for any request that doesn't match any of the above, send back index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/client/build/index.html'));
-});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
