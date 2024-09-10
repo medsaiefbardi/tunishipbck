@@ -22,7 +22,6 @@ const skillSchema = new Schema({
     enum: ['N/A','N', 'A', 'M', 'E'], 
     required: true,
     default: 'N/A'
-
   },
   definition: String,
   notion: String,

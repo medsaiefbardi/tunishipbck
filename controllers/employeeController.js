@@ -1,5 +1,5 @@
 const Employee = require('../models/Employee');
-const bcrypt = require('bcryptjs'); // Ensure bcrypt is required at the top
+const bcrypt = require('bcryptjs'); 
 exports.getProfile = async (req, res) => {
   try {
     const employee = await Employee.findById(req.employeeId).populate('jobPosition').populate('skills.skill');
