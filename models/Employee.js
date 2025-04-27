@@ -47,5 +47,4 @@ const employeeSchema = new mongoose.Schema({
 });
 
 const Employee = mongoose.model('Employee', employeeSchema);
-objective, target, result, P, O
 module.exports = Employee;
