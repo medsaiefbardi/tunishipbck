@@ -14,22 +14,28 @@ const employeeSchema = new mongoose.Schema({
     objectivesPerformance: [
       {
         objective: { type: String },
-        indicator: { type: String },
-        weight: { type: Number },
+        target: { type: Number },
+        result: { type: Number },
+        P: { type: Number },
+        O: { type: Number },
       },
     ],
     objectivesCompetence: [
       {
         objective: { type: String },
-        indicator: { type: String },
-        weight: { type: Number },
+        target: { type: Number },
+        result: { type: Number },
+        P: { type: Number },
+        O: { type: Number },
       },
     ],
     objectivesGerance: [
       {
         objective: { type: String },
-        indicator: { type: String },
-        weight: { type: Number },
+        target: { type: Number },
+        result: { type: Number },
+        P: { type: Number },
+        O: { type: Number },
       },
     ],
     totalPerformance: { type: Number, default: 0 },
@@ -41,5 +47,5 @@ const employeeSchema = new mongoose.Schema({
 });
 
 const Employee = mongoose.model('Employee', employeeSchema);
-
+objective, target, result, P, O
 module.exports = Employee;
