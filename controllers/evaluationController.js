@@ -18,7 +18,7 @@ exports.getEvaluation = async (req, res) => {
   // Met à jour ou crée une évaluation pour un employé
   exports.updateEvaluation = async (req, res) => {
     try {
-      const { objectivesPerformance, objectivesCompetence, totalPerformance, totalCompetence, totalEvaluation } = req.body;
+      const { objectivesPerformance, objectivesCompetence,objectivesGerance, totalPerformance, totalCompetence,totalGerance, totalEvaluation } = req.body;
       const employeeName = req.params.employeeName;
   
       console.log('Données reçues par le backend :', req.body);
@@ -32,8 +32,10 @@ exports.getEvaluation = async (req, res) => {
       employee.evaluation = {
         objectivesPerformance,
         objectivesCompetence,
+        objectivesGerance,
         totalPerformance: parseFloat(totalPerformance) || 0,
         totalCompetence: parseFloat(totalCompetence) || 0,
+        totalGerance: parseFloat(totalGerance) || 0,
         totalEvaluation: parseFloat(totalEvaluation) || 0,
       };
   
