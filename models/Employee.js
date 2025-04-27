@@ -25,8 +25,16 @@ const employeeSchema = new mongoose.Schema({
         weight: { type: Number },
       },
     ],
+    objectivesGerance: [
+      {
+        objective: { type: String },
+        indicator: { type: String },
+        weight: { type: Number },
+      },
+    ],
     totalPerformance: { type: Number, default: 0 },
     totalCompetence: { type: Number, default: 0 },
+    totalGerance: { type: Number, default: 0 },
     totalEvaluation: { type: Number, default: 0 },
   },
   skills: [employeeSkillSchema]
