@@ -24,6 +24,7 @@ exports.getEvaluation = async (req, res) => {
         console.log('Données reçues par le backend :', req.body);
     
         const employee = await Employee.findOne({ name: { $regex: `^${employeeName.trim()}$`, $options: 'i' } });
+        console.log("emp",employee)
         if (!employee) {
           return res.status(404).json({ message: "Employé non trouvé.", employeeName });
         }
