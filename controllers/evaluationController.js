@@ -1,60 +1,41 @@
 const Employee = require('../models/Employee');
 
 exports.getEvaluation = async (req, res) => {
-    try {
-      const employeeName = decodeURIComponent(req.params.employeeName.trim());
-      const employee = await Employee.findOne({ name: { $regex: `^${employeeName}$`, $options: 'i' } });
-   
-  
-      if (!employee) {
-        return res.status(404).json({ message: "Employé non trouvé." });
-      }
-  
-      res.status(200).json({ evaluation: employee.evaluation });
-    } catch (err) {
-      console.error('Erreur lors de la récupération de l\'évaluation :', err);
-      res.status(500).json({ message: "Erreur interne du serveur.", error: err.message });
+  try {
+    const employeeName = decodeURIComponent(req.params.employeeName.trim());
+    const employee = await Employee.findOne({ name: { $regex: `^${employeeName}$`, $options: 'i' } });
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employé non trouvé." });
     }
-  };
-  // Met à jour ou crée une évaluation pour un employé
-  exports.updateEvaluation = async (req, res) => {
-      try {
-        const { objectivesPerformance, objectivesCompetence, objectivesGerance, totalPerformance, totalCompetence, totalGerance, totalEvaluation } = req.body;
-        const employeeName = decodeURIComponent(req.params.employeeName.trim());
-    
-        console.log('Données reçues par le backend :', req.body);
-    
-        const employee = await Employee.findOne({ name: { $regex: `^${employeeName}$`, $options: 'i' } });
-        console.log("emp",employee)
-        if (!employee) {
-          return res.status(404).json({ message: "Employé non trouvé.", employeeName });
-        }
-    
-        // Transform frontend objectives to match Employee schema
-        const transformObjectives = (objectives) =>
-          objectives.map(({ objective, target, result, P, O }) => ({
-            objective,
-            target: parseFloat(target) || 0,
-            result: parseFloat(result) || 0,
-            P: parseFloat(P) || 0,
-            O: parseFloat(O) || 0,
-          }));
-    
-        employee.evaluation = {
-          objectivesPerformance: transformObjectives(objectivesPerformance),
-          objectivesCompetence: transformObjectives(objectivesCompetence),
-          objectivesGerance: transformObjectives(objectivesGerance),
-          totalPerformance: parseFloat(totalPerformance) || 0,
-          totalCompetence: parseFloat(totalCompetence) || 0,
-          totalGerance: parseFloat(totalGerance) || 0,
-          totalEvaluation: parseFloat(totalEvaluation) || 0,
-        };
-    
-        await employee.save();
-    
-        res.status(200).json({ message: "Évaluation mise à jour avec succès.", evaluation: employee.evaluation });
-      } catch (err) {
-        console.error('Erreur lors de la mise à jour de l\'évaluation :', err);
-        res.status(500).json({ message: "Erreur interne du serveur.", error: err.message });
-      }
-    };
+
+    res.status(200).json({ evaluation: employee.evaluation });
+  } catch (err) {
+    console.error('Erreur lors de la récupération de l\'évaluation :', err);
+    res.status(500).json({ message: "Erreur interne du serveur.", error: err.message });
+  }
+};
+
+exports.updateEvaluation = async (req, res) => {
+  try {
+    const { totalEvaluation } = req.body;
+    const employeeName = decodeURIComponent(req.params.employeeName.trim());
+
+    console.log('Données reçues par le backend :', req.body);
+
+    const employee = await Employee.findOne({ name: { $regex: `^${employeeName}$`, $options: 'i' } });
+    console.log("emp", employee);
+    if (!employee) {
+      return res.status(404).json({ message: "Employé non trouvé.", employeeName });
+    }
+
+    employee.evaluation.totalEvaluation = parseFloat(totalEvaluation) || 0;
+
+    await employee.save();
+
+    res.status(200).json({ message: "Évaluation mise à jour avec succès.", evaluation: employee.evaluation });
+  } catch (err) {
+    console.error('Erreur lors de la mise à jour de l\'évaluation :', err);
+    res.status(500).json({ message: "Erreur interne du serveur.", error: err.message });
+  }
+};
