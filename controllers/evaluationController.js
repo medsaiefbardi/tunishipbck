@@ -2,8 +2,9 @@ const Employee = require('../models/Employee');
 
 exports.getEvaluation = async (req, res) => {
     try {
-      const employeeName = req.params.employeeName;
-      const employee = await Employee.findOne({ name: { $regex: `^${employeeName.trim()}$`, $options: 'i' } });
+      const employeeName = decodeURIComponent(req.params.employeeName.trim());
+      const employee = await Employee.findOne({ name: { $regex: `^${employeeName}$`, $options: 'i' } });
+   
   
       if (!employee) {
         return res.status(404).json({ message: "Employé non trouvé." });
@@ -19,11 +20,11 @@ exports.getEvaluation = async (req, res) => {
   exports.updateEvaluation = async (req, res) => {
       try {
         const { objectivesPerformance, objectivesCompetence, objectivesGerance, totalPerformance, totalCompetence, totalGerance, totalEvaluation } = req.body;
-        const employeeName = req.params.employeeName;
+        const employeeName = decodeURIComponent(req.params.employeeName.trim());
     
         console.log('Données reçues par le backend :', req.body);
     
-        const employee = await Employee.findOne({ name: { $regex: `^${employeeName.trim()}$`, $options: 'i' } });
+        const employee = await Employee.findOne({ name: { $regex: `^${employeeName}$`, $options: 'i' } });
         console.log("emp",employee)
         if (!employee) {
           return res.status(404).json({ message: "Employé non trouvé.", employeeName });
