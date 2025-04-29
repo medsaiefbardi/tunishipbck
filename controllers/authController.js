@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Employee = require('../models/Employee');
-const JobPosition = require('../models/JobPosition'); 
+const JobPosition = require('../models/JobPosition');
+
 
 exports.register = async (req, res) => {
   const { name, password, role, jobPosition } = req.body;

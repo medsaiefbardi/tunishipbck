@@ -28,6 +28,7 @@ mongoose.connect(process.env.MONGO_URL ,{})
   .then(() => console.log("DB Connected"))
   .catch((err) => console.error(err));
 
+app.options('*', cors());
   
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
