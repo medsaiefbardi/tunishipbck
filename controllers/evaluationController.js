@@ -31,12 +31,12 @@ exports.getEvaluation = async (req, res) => {
     
         // Transform frontend objectives to match Employee schema
         const transformObjectives = (objectives) =>
-          objectives.map(({ objective, P }) => ({
+          objectives.map(({ objective, target, result, P, O }) => ({
             objective,
-            target: parseFloat(P) || 0,
-            result: parseFloat(P) || 0,
+            target: parseFloat(target) || 0,
+            result: parseFloat(result) || 0,
             P: parseFloat(P) || 0,
-            O: parseFloat(P) || 0,
+            O: parseFloat(O) || 0,
           }));
     
         employee.evaluation = {
