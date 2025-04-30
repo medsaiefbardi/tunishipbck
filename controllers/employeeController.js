@@ -1,8 +1,11 @@
 const Employee = require('../models/Employee');
-const bcrypt = require('bcryptjs'); 
+const bcrypt = require('bcryptjs');
+
 exports.getProfile = async (req, res) => {
   try {
-    const employee = await Employee.findById(req.employeeId).populate('jobPosition').populate('skills.skill');
+    const employee = await Employee.findById(req.employeeId)
+      .populate('jobPosition')
+      .populate('skills.skill');
     if (!employee) {
       return res.status(404).json({ msg: 'Employee not found' });
     }
@@ -10,6 +13,7 @@ exports.getProfile = async (req, res) => {
     res.json({
       employee,
       jobPosition: employee.jobPosition,
+      totalEvaluation: employee.evaluation?.totalEvaluation || 'Non évalué', // Include totalEvaluation
     });
   } catch (err) {
     console.error(err);
@@ -19,8 +23,15 @@ exports.getProfile = async (req, res) => {
 
 exports.getAllEmployees = async (req, res) => {
   try {
-    const employees = await Employee.find().populate('jobPosition').populate('skills.skill');
-    res.json(employees);
+    const employees = await Employee.find()
+      .populate('jobPosition')
+      .populate('skills.skill');
+    res.json(
+      employees.map((employee) => ({
+        ...employee.toObject(),
+        totalEvaluation: employee.evaluation?.totalEvaluation || 'Non évalué', // Include totalEvaluation
+      }))
+    );
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
@@ -29,8 +40,17 @@ exports.getAllEmployees = async (req, res) => {
 
 exports.getEmployeeById = async (req, res) => {
   try {
-    const employee = await Employee.findById(req.params.id).populate('jobPosition').populate('skills.skill');
-    res.json(employee);
+    const employee = await Employee.findById(req.params.id)
+      .populate('jobPosition')
+      .populate('skills.skill');
+    if (!employee) {
+      return res.status(404).json({ msg: 'Employee not found' });
+    }
+
+    res.json({
+      ...employee.toObject(),
+      totalEvaluation: employee.evaluation?.totalEvaluation || 'Non évalué', // Include totalEvaluation
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
@@ -40,7 +60,7 @@ exports.getEmployeeById = async (req, res) => {
 exports.createEmployee = async (req, res) => {
   try {
     const { name, password, role, jobPosition, skills } = req.body;
-    
+
     // Check if the employee already exists
     const existingEmployee = await Employee.findOne({ name });
     if (existingEmployee) {
@@ -51,7 +71,13 @@ exports.createEmployee = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new employee with hashed password
-    const newEmployee = new Employee({ name, password: hashedPassword, role, jobPosition, skills });
+    const newEmployee = new Employee({
+      name,
+      password: hashedPassword,
+      role,
+      jobPosition,
+      skills,
+    });
     await newEmployee.save();
     res.json(newEmployee);
   } catch (err) {
@@ -69,13 +95,15 @@ exports.updateEmployee = async (req, res) => {
         name,
         role,
         jobPosition,
-        skills: skills.map(skill => ({
+        skills: skills.map((skill) => ({
           skill: skill.skill._id || skill.skill,
-          level: skill.level
-        }))
+          level: skill.level,
+        })),
       },
       { new: true }
-    ).populate('jobPosition').populate('skills.skill');
+    )
+      .populate('jobPosition')
+      .populate('skills.skill');
 
     res.json(updatedEmployee);
   } catch (err) {
@@ -83,7 +111,6 @@ exports.updateEmployee = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
-
 
 exports.deleteEmployee = async (req, res) => {
   try {
@@ -112,7 +139,9 @@ exports.removeSkillFromEmployee = async (req, res) => {
   const { skillId } = req.body;
   try {
     const employee = await Employee.findById(req.params.id);
-    employee.skills = employee.skills.filter(skill => skill.skill.toString() !== skillId);
+    employee.skills = employee.skills.filter(
+      (skill) => skill.skill.toString() !== skillId
+    );
     await employee.save();
     res.json(employee);
   } catch (err) {
@@ -125,7 +154,9 @@ exports.updateSkillLevel = async (req, res) => {
   const { level } = req.body;
   try {
     const employee = await Employee.findById(req.params.employeeId);
-    const skill = employee.skills.find(s => s.skill.toString() === req.params.skillId);
+    const skill = employee.skills.find(
+      (s) => s.skill.toString() === req.params.skillId
+    );
     if (skill) {
       skill.level = level;
       await employee.save();
